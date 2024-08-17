@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Support Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #007BFF;
+            color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar h2 {
+            margin-top: 0;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 10px 0;
+        }
+        .chat-container {
+            flex: 1;
+            margin: 50px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        .chatbox {
+            border: 1px solid #ccc;
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .chat-input {
+            width: calc(100% - 50px);
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .send-btn {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Available Commands</h2>
+        <ul>
+            <li><strong>services:</strong> Ask about our services.</li>
+            <li><strong>pricing:</strong> Inquire about pricing.</li>
+            <li><strong>timeline:</strong> Get information on project timelines.</li>
+            <li><strong>support:</strong> Request support for an issue.</li>
+            <li><strong>escalation:</strong> Speak to a human agent.</li>
+        </ul>
+    </div>
+
+    <div class="chat-container">
+        <div class="chatbox" id="chatbox"></div>
+        <input type="text" id="userInput" class="chat-input" placeholder="Type your message here..." />
+        <button class="send-btn" onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById("userInput").value;
+            var chatbox = document.getElementById("chatbox");
+            
+            // Display user message
+            chatbox.innerHTML += "<div><strong>You:</strong> " + userInput + "</div>";
+            
+            // Send user message to the backend
+            fetch('/get_response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'message=' + encodeURIComponent(userInput)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display bot response
+                chatbox.innerHTML += "<div><strong>Bot:</strong> " + data.response + "</div>";
+                chatbox.scrollTop = chatbox.scrollHeight;  // Scroll to the bottom of the chatbox
+            });
+
+            document.getElementById("userInput").value = "";  // Clear input field
+        }
+    </script>
+</body>
+</html>
