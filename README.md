@@ -4,7 +4,7 @@
 
 This is a demo customer support chatbot designed for a digital marketing company. The chatbot can assist with answering common customer inquiries, providing basic information about services, and escalating issues to human agents when necessary.
 
-Live Hosted Link: https://customer-support-chatbot-production.up.railway.app/
+Live Hosted Link: https://customer-support-chatbot.onrender.com/
 
 ## Features
 
