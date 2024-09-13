@@ -26,7 +26,7 @@ Live Hosted Link: https://customer-support-chatbot.onrender.com/
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/yourusername/demo-customer-support-chatbot.git
+    git clone https://github.com/AdityaSrivastavDS/Customer-Support-Chatbot
     cd demo-customer-support-chatbot
     ```
 
