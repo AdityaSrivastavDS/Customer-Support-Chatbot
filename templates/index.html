@@ -5,64 +5,282 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Support Chatbot</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #d8dce0;
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --accent-color: #ec4899;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --chat-bg: #ffffff;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
             display: flex;
-            height: 100vh;
+            overflow: hidden;
+            position: relative;
         }
+
+        /* Enhanced 3D Animation Background */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6, #ec4899, #f43f5e, #f59e0b);
+            animation: gradientBG 15s ease infinite;
+            background-size: 400% 400%;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .shape::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: inherit;
+            filter: blur(10px);
+        }
+
+        @keyframes float {
+            0% { 
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
         .sidebar {
-            width: 250px;
-            background-color: #007BFF;
-            color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
         }
+
         .sidebar h2 {
-            margin-top: 0;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .sidebar ul {
-            list-style-type: none;
-            padding: 0;
+            list-style: none;
         }
+
         .sidebar ul li {
-            margin: 10px 0;
+            margin: 1rem 0;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
         }
+
+        .sidebar ul li:hover {
+            background: rgba(99, 102, 241, 0.2);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+
         .chat-container {
             flex: 1;
-            margin: 50px;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
+            padding: 2rem;
+            margin-left: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 1;
         }
+
         .chatbox {
-            border: 1px solid #ccc;
-            height: 300px;
-            overflow-y: scroll;
-            padding: 10px;
-            margin-bottom: 10px;
+            flex: 1;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            overflow-y: auto;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            max-height: calc(100vh - 200px);
         }
+
+        .chat-input-container {
+            display: flex;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
         .chat-input {
-            width: calc(100% - 50px);
-            padding: 10px;
-            margin-right: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .send-btn {
-            padding: 10px 20px;
+            flex: 1;
+            padding: 1rem;
             border: none;
-            background-color: #007BFF;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .send-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             color: white;
-            border-radius: 5px;
+            border: none;
+            border-radius: 0.5rem;
             cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            max-width: 80%;
+            transition: transform 0.3s ease;
+        }
+
+        .message:hover {
+            transform: scale(1.02);
+        }
+
+        .user-message {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            margin-left: auto;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .bot-message {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Add 3D particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: particleFloat 15s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
         }
     </style>
 </head>
 <body>
+    <div class="background-animation">
+        <div class="floating-shapes">
+            <!-- Shapes will be added dynamically via JavaScript -->
+        </div>
+        <div class="particles">
+            <!-- Particles will be added dynamically -->
+        </div>
+    </div>
+
     <div class="sidebar">
         <h2>Available Commands</h2>
         <ul>
@@ -76,17 +294,48 @@
 
     <div class="chat-container">
         <div class="chatbox" id="chatbox"></div>
-        <input type="text" id="userInput" class="chat-input" placeholder="Type your message here..." />
-        <button class="send-btn" onclick="sendMessage()">Send</button>
+        <div class="chat-input-container">
+            <input type="text" id="userInput" class="chat-input" placeholder="Type your message here..." />
+            <button class="send-btn" onclick="sendMessage()">Send</button>
+        </div>
     </div>
 
     <script>
+        // Create floating shapes with more variety
+        const shapesContainer = document.querySelector('.floating-shapes');
+        const particlesContainer = document.querySelector('.particles');
+        
+        // Create shapes with different sizes and animations
+        for (let i = 0; i < 20; i++) {
+            const shape = document.createElement('div');
+            shape.className = 'shape';
+            const size = Math.random() * 150 + 50;
+            shape.style.width = `${size}px`;
+            shape.style.height = `${size}px`;
+            shape.style.left = `${Math.random() * 100}%`;
+            shape.style.top = `${Math.random() * 100}%`;
+            shape.style.animationDelay = `${Math.random() * 20}s`;
+            shape.style.animationDuration = `${Math.random() * 10 + 15}s`;
+            shapesContainer.appendChild(shape);
+        }
+
+        // Create particles
+        for (let i = 0; i < 100; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            particle.style.animationDelay = `${Math.random() * 15}s`;
+            particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+            particlesContainer.appendChild(particle);
+        }
+
         function sendMessage() {
             var userInput = document.getElementById("userInput").value;
             var chatbox = document.getElementById("chatbox");
             
-            // Display user message
-            chatbox.innerHTML += "<div><strong>You:</strong> " + userInput + "</div>";
+            // Display user message with new styling
+            chatbox.innerHTML += `<div class="message user-message">${userInput}</div>`;
             
             // Send user message to the backend
             fetch('/get_response', {
@@ -98,13 +347,20 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Display bot response
-                chatbox.innerHTML += "<div><strong>Bot:</strong> " + data.response + "</div>";
-                chatbox.scrollTop = chatbox.scrollHeight;  // Scroll to the bottom of the chatbox
+                // Display bot response with new styling
+                chatbox.innerHTML += `<div class="message bot-message">${data.response}</div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
             });
 
-            document.getElementById("userInput").value = "";  // Clear input field
+            document.getElementById("userInput").value = "";
         }
+
+        // Add Enter key support
+        document.getElementById("userInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                sendMessage();
+            }
+        });
     </script>
 </body>
 </html>
